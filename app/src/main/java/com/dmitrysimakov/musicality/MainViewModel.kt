@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.dmitrysimakov.musicality.data.Song
 import com.dmitrysimakov.musicality.data.generateId
+import com.dmitrysimakov.musicality.data.songsCollection
 import com.dmitrysimakov.musicality.data.songsStorage
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -44,12 +45,18 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     fun uploadSong() = viewModelScope.launch {
         val songUri = songUri.value ?: return@launch
         val filename = filename.value ?: return@launch
+        val artist = artist.value ?: return@launch
+        val title = title.value ?: return@launch
+        val album = album.value ?: ""
+        val art = art.value.toString()
+        val duration = duration.value ?: ""
 
-        val fileExtension = filename.substring(filename.indexOf('.'))
+        val fileExtension = filename.substring(filename.lastIndexOf('.'))
         val storageFilename = generateId() + fileExtension
         val songRef = songsStorage.child(storageFilename)
         songRef.putFile(songUri).await()
         val downloadUrl = songRef.downloadUrl.await().toString()
-        val song = Song()
+        val song = Song(downloadUrl, artist, title, album, art, duration)
+        songsCollection.document(song.id).set(song)
     }
 }
