@@ -8,7 +8,7 @@ import com.dmitrysimakov.musicality.databinding.ItemSongBinding
 import com.dmitrysimakov.musicality.util.DataBoundListAdapter
 
 class SongsAdapter(
-    private val playClick: ((Song) -> Unit),
+    private val playClick: ((String) -> Unit),
     clickCallback: ((Song) -> Unit)
 ) : DataBoundListAdapter<Song, ItemSongBinding>(clickCallback, SongsDiffCallback()) {
 
@@ -17,6 +17,6 @@ class SongsAdapter(
 
     override fun bind(binding: ItemSongBinding, item: Song) {
         binding.song = item
-        binding.playBtn.setOnClickListener { playClick(item) }
+        binding.playBtn.setOnClickListener { playClick(item.url) }
     }
 }

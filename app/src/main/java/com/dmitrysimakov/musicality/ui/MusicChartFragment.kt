@@ -1,5 +1,6 @@
 package com.dmitrysimakov.musicality.ui
 
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,10 +17,9 @@ class MusicChartFragment : Fragment() {
 
     private val vm by viewModels<MusicChartViewModel>()
 
-    private val adapter by lazy { SongsAdapter(
-        {  },
-        {  }
-    )}
+    private val adapter by lazy { SongsAdapter(::playSong) {  } }
+
+    private val player = MediaPlayer()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_music_chart, container, false)
@@ -35,4 +35,14 @@ class MusicChartFragment : Fragment() {
         fab.setOnClickListener { navigate(toAddSongFragment()) }
     }
 
+    private fun playSong(url: String) {
+        if (player.isPlaying) {
+            player.pause()
+            "".toByteArray()
+        } else {
+            player.setDataSource(url)
+            player.setOnPreparedListener { player.start() }
+            player.prepare()
+        }
+    }
 }

@@ -7,10 +7,7 @@ import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.dmitrysimakov.musicality.data.Song
-import com.dmitrysimakov.musicality.data.generateId
-import com.dmitrysimakov.musicality.data.songsCollection
-import com.dmitrysimakov.musicality.data.songsStorage
+import com.dmitrysimakov.musicality.data.*
 import com.dmitrysimakov.musicality.util.Event
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -48,22 +45,26 @@ class AddSongViewModel(app: Application) : AndroidViewModel(app) {
 
     fun uploadSong() = viewModelScope.launch {
         val songUri = songUri.value ?: return@launch
-        val filename = filename.value ?: return@launch
         val artist = artist.value ?: return@launch
         val title = title.value ?: return@launch
         val album = album.value ?: ""
-        val art = art.value.toString()
+        val art = art.value
         val duration = duration.value ?: ""
 
         uploading.value = true
 
-        val fileExtension = filename.substring(filename.lastIndexOf('.'))
-        val storageFilename = generateId() + fileExtension
-        val songRef = songsStorage.child(storageFilename)
+        val songId = generateId()
+        val songRef = songsStorage.child(songId)
         songRef.putFile(songUri).await()
-        val downloadUrl = songRef.downloadUrl.await().toString()
+        val songUrl = songRef.downloadUrl.await().toString()
+        var artUrl = ""
+        if (art != null) {
+            val artRef = artsStorage.child(songId)
+            artRef.putBytes(art).await()
+            artUrl = artRef.downloadUrl.await().toString()
+        }
 
-        val song = Song(downloadUrl, artist, title, album, art, duration)
+        val song = Song(songId, songUrl, artist, title, album, artUrl, duration)
         songsCollection.document(song.id).set(song).await()
         uploadedEvent.value = Event(Unit)
     }

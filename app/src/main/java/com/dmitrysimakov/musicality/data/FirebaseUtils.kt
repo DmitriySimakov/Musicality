@@ -13,3 +13,4 @@ val songsCollection = firestore.collection("songs")
 val storage = FirebaseStorage.getInstance().reference
 
 val songsStorage = storage.child("songs")
+val artsStorage = storage.child("arts")
