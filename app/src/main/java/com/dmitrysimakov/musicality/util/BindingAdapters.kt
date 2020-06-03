@@ -1,4 +1,4 @@
-package com.dmitrysimakov.musicality
+package com.dmitrysimakov.musicality.util
 
 import android.view.View
 import android.widget.ImageView

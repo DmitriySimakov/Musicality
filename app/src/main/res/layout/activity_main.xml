@@ -1,104 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <data>
-
-        <variable
-            name="vm"
-            type="com.dmitrysimakov.musicality.MainViewModel" />
-    </data>
-
-    <LinearLayout
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/nav_host_fragment"
+        android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".MainActivity"
-        android:orientation="vertical"
-        android:padding="@dimen/frame_padding"
-        >
+        app:defaultNavHost="true"
+        app:navGraph="@navigation/main"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/choose_genre"
-            />
-
-        <Spinner
-            android:id="@+id/spinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/chooseBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/choose"
-                />
-
-            <TextView
-                android:id="@+id/filename"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@{vm.filename}"
-                />
-
-        </LinearLayout>
-
-        <EditText
-            android:id="@+id/artist"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@={vm.artist}"
-            />
-
-        <EditText
-            android:id="@+id/title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@={vm.title}"
-            />
-
-        <EditText
-            android:id="@+id/album"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@={vm.album}"
-            />
-
-        <TextView
-            android:id="@+id/duration"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@{vm.duration}"
-            />
-
-        <ImageView
-            android:id="@+id/art"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:scaleType="centerCrop"
-            tools:src="@tools:sample/backgrounds/scenic"
-            app:byteArray="@{vm.art}"
-            app:goneUnless="@{vm.art != null}"
-            />
-
-        <Button
-            android:id="@+id/uploadBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/upload"
-            />
-
-    </LinearLayout>
-
-</layout>
+</RelativeLayout>

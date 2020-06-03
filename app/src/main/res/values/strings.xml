@@ -3,4 +3,5 @@
     <string name="choose_genre">Выберите жанр:</string>
     <string name="upload">Загрузить</string>
     <string name="choose">Выбрать</string>
+    <string name="new_song">Новая песня</string>
 </resources>

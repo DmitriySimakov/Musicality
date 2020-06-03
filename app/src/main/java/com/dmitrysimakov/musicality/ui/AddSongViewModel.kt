@@ -1,4 +1,4 @@
-package com.dmitrysimakov.musicality
+package com.dmitrysimakov.musicality.ui
 
 import android.app.Application
 import android.media.MediaMetadataRetriever
@@ -11,10 +11,11 @@ import com.dmitrysimakov.musicality.data.Song
 import com.dmitrysimakov.musicality.data.generateId
 import com.dmitrysimakov.musicality.data.songsCollection
 import com.dmitrysimakov.musicality.data.songsStorage
+import com.dmitrysimakov.musicality.util.Event
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
-class MainViewModel(app: Application) : AndroidViewModel(app) {
+class AddSongViewModel(app: Application) : AndroidViewModel(app) {
 
     private val songUri = MutableLiveData<Uri?>()
 
@@ -26,6 +27,9 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     val album = MutableLiveData("")
     val duration = MutableLiveData("")
     val art = MutableLiveData<ByteArray>()
+
+    val uploading = MutableLiveData(false)
+    val uploadedEvent = MutableLiveData<Event<Unit>>()
 
     fun setSong(uri: Uri, filename: String?) {
         songUri.value = uri
@@ -51,12 +55,16 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         val art = art.value.toString()
         val duration = duration.value ?: ""
 
+        uploading.value = true
+
         val fileExtension = filename.substring(filename.lastIndexOf('.'))
         val storageFilename = generateId() + fileExtension
         val songRef = songsStorage.child(storageFilename)
         songRef.putFile(songUri).await()
         val downloadUrl = songRef.downloadUrl.await().toString()
+
         val song = Song(downloadUrl, artist, title, album, art, duration)
-        songsCollection.document(song.id).set(song)
+        songsCollection.document(song.id).set(song).await()
+        uploadedEvent.value = Event(Unit)
     }
 }
