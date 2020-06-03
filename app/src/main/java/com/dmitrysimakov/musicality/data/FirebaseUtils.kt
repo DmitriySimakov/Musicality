@@ -10,6 +10,6 @@ fun generateId() = firestore.collection("path").document().id
 val songsCollection = firestore.collection("songs")
 
 
-val storage = FirebaseStorage.getInstance()
+val storage = FirebaseStorage.getInstance().reference
 
-val songsStorage = storage.reference.child("songs")
+val songsStorage = storage.child("songs")
